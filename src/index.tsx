@@ -118,7 +118,7 @@ export const useScrollData = (options: OptionsType = {}): ScrollDataType => {
       y: Math.round(totalDistance.y / (Math.max(1, time) / 1000))
     };
 
-    const newData = {
+    const nextFrameData = {
       ...frameData.current,
       scrolling: true,
       time: Math.round(time) || 0,
@@ -130,10 +130,10 @@ export const useScrollData = (options: OptionsType = {}): ScrollDataType => {
     };
 
     // Store new values
-    frameData.current = newData;
+    frameData.current = nextFrameData;
 
     // Update the state
-    setData(newData);
+    setData(nextFrameData);
   }
 
   function scrollStart() {
