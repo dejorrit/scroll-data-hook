@@ -38,55 +38,48 @@ function getPositionY() {
   return window.pageYOffset || 0;
 }
 
-function getDirectionX(x: number, frameData: ScrollDataType): string | null {
-  if (x > frameData.position.x) return "right";
-  if (x < frameData.position.x) return "left";
+function getDirectionX(x: number, frameValues: ScrollDataType): string | null {
+  if (x > frameValues.position.x) return "right";
+  if (x < frameValues.position.x) return "left";
   return null;
 }
 
-function getDirectionY(y: number, frameData: ScrollDataType): string | null {
-  if (y > frameData.position.y) return "down";
-  if (y < frameData.position.y) return "up";
+function getDirectionY(y: number, frameValues: ScrollDataType): string | null {
+  if (y > frameValues.position.y) return "down";
+  if (y < frameValues.position.y) return "up";
   return null;
 }
 
-function getTotalDistanceX(x: number, frameData: ScrollDataType): number {
-  return frameData.totalDistance.x + Math.abs(x - frameData.position.x);
+function getTotalDistanceX(x: number, frameValues: ScrollDataType): number {
+  return frameValues.totalDistance.x + Math.abs(x - frameValues.position.x);
 }
 
-function getTotalDistanceY(y: number, frameData: ScrollDataType): number {
-  return frameData.totalDistance.y + Math.abs(y - frameData.position.y);
+function getTotalDistanceY(y: number, frameValues: ScrollDataType): number {
+  return frameValues.totalDistance.y + Math.abs(y - frameValues.position.y);
 }
 
-function getRelativeDistanceX(x: number, startData: ScrollDataType): number {
-  return Math.abs(x - startData.position.x);
+function getRelativeDistanceX(x: number, startValues: ScrollDataType): number {
+  return Math.abs(x - startValues.position.x);
 }
 
-function getRelativeDistanceY(y: number, startData: ScrollDataType): number {
-  return Math.abs(y - startData.position.y);
+function getRelativeDistanceY(y: number, startValues: ScrollDataType): number {
+  return Math.abs(y - startValues.position.y);
 }
 
 export const useScrollData = (options: OptionsType = {}): ScrollDataType => {
   const [data, setData] = React.useState<ScrollDataType>(INITIAL_DATA);
-  const startData = React.useRef<ScrollDataType>(INITIAL_DATA);
-  const frameData = React.useRef<ScrollDataType>(INITIAL_DATA);
-  const startDate = React.useRef<Date>(new Date());
-  const sEndTimer = React.useRef<any>(null);
+  const startValues = React.useRef<ScrollDataType>(INITIAL_DATA);
+  const frameValues = React.useRef<ScrollDataType>(INITIAL_DATA);
+  const startTimestamp = React.useRef<number | null>();
+  const frameTimestamp = React.useRef<number | null>();
+  const scrollTimeout = React.useRef<any>(null);
+  const raf = React.useRef<any>(null);
 
-  function clearAndSetsEndTimer() {
-    if (sEndTimer.current) clearTimeout(sEndTimer.current);
-    sEndTimer.current = setTimeout(scrollEnd, SCROLL_END_DURATION);
-  }
-
-  function onScroll() {
-    clearAndSetsEndTimer();
-
-    if (!frameData.current.scrolling) {
-      scrollStart();
-    }
+  function frame(timestamp: number) {
+    if (!startTimestamp.current) startTimestamp.current = timestamp;
 
     // Calculate the time in ms that scrolling is active
-    const time = Number(new Date()) - Number(startDate.current);
+    const time = timestamp - startTimestamp.current;
 
     // Set new position values
     const position = {
@@ -96,32 +89,41 @@ export const useScrollData = (options: OptionsType = {}): ScrollDataType => {
 
     // Set new direction values
     const direction = {
-      x: getDirectionX(position.x, frameData.current),
-      y: getDirectionY(position.y, frameData.current)
+      x: getDirectionX(position.x, frameValues.current),
+      y: getDirectionY(position.y, frameValues.current)
     };
 
     // Set new totalDistance values
     const totalDistance = {
-      x: getTotalDistanceX(position.x, frameData.current),
-      y: getTotalDistanceY(position.y, frameData.current)
+      x: getTotalDistanceX(position.x, frameValues.current),
+      y: getTotalDistanceY(position.y, frameValues.current)
     };
 
     // Set new relativeDistance values
     const relativeDistance = {
-      x: getRelativeDistanceX(position.x, startData.current),
-      y: getRelativeDistanceY(position.y, startData.current)
+      x: getRelativeDistanceX(position.x, startValues.current),
+      y: getRelativeDistanceY(position.y, startValues.current)
     };
 
     // Set new speed values
+    const timestampDiff = timestamp - (frameTimestamp.current || 0);
     const speed = {
-      x: Math.round(totalDistance.x / (Math.max(1, time) / 1000)),
-      y: Math.round(totalDistance.y / (Math.max(1, time) / 1000))
+      x: Math.round(
+        (Math.abs(frameValues.current.position.x - position.x) /
+          Math.max(1, timestampDiff)) *
+          1000
+      ),
+      y: Math.round(
+        (Math.abs(frameValues.current.position.y - position.y) /
+          Math.max(1, timestampDiff)) *
+          1000
+      )
     };
 
-    const nextFrameData = {
-      ...frameData.current,
+    const nextframeValues = {
+      ...frameValues.current,
       scrolling: true,
-      time: Math.round(time) || 0,
+      time: Math.round(time),
       direction,
       speed,
       totalDistance,
@@ -130,17 +132,38 @@ export const useScrollData = (options: OptionsType = {}): ScrollDataType => {
     };
 
     // Store new values
-    frameData.current = nextFrameData;
+    frameValues.current = nextframeValues;
 
     // Update the state
-    setData(nextFrameData);
+    setData(nextframeValues);
+
+    // Set frameTimestamp for speed calculation
+    frameTimestamp.current = timestamp;
+
+    // We're still scrolling, so call tick method again
+    raf.current = requestAnimationFrame(frame);
+  }
+
+  function clearAndSetscrollTimeout() {
+    if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
+    scrollTimeout.current = setTimeout(scrollEnd, SCROLL_END_DURATION);
+  }
+
+  function onScroll() {
+    if (!frameValues.current.scrolling) {
+      scrollStart();
+    }
+
+    clearAndSetscrollTimeout();
   }
 
   function scrollStart() {
     // Save data at the moment of starting so we have
     // something to compare the current values against
-    startData.current = { ...frameData.current };
-    startDate.current = new Date();
+    startValues.current = { ...frameValues.current };
+
+    // Start RAF
+    raf.current = requestAnimationFrame(frame);
 
     // If present, call onScrollStart function
     if (typeof options.onScrollStart === "function") {
@@ -150,8 +173,8 @@ export const useScrollData = (options: OptionsType = {}): ScrollDataType => {
 
   function scrollEnd() {
     // Reset scroll data
-    frameData.current = {
-      ...frameData.current,
+    frameValues.current = {
+      ...frameValues.current,
       scrolling: false,
       time: 0,
       direction: {
@@ -173,7 +196,12 @@ export const useScrollData = (options: OptionsType = {}): ScrollDataType => {
     };
 
     // Update the state
-    setData(frameData.current);
+    setData(frameValues.current);
+
+    // Cancel RAF
+    cancelAnimationFrame(raf.current);
+    startTimestamp.current = null;
+    frameTimestamp.current = null;
 
     // If present, call onScrollEnd function
     if (typeof options.onScrollEnd === "function") {
@@ -190,7 +218,7 @@ export const useScrollData = (options: OptionsType = {}): ScrollDataType => {
 
     // Remove listener when unmounting
     return () => {
-      clearTimeout(sEndTimer.current);
+      clearTimeout(scrollTimeout.current);
       window.removeEventListener("scroll", onScroll, true);
     };
   }, []);
