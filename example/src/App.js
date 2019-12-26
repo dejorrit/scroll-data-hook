@@ -28,8 +28,8 @@ const App = () => {
 
           <div className="data-item">
             <div className="data-item__inner">
-              <div className="data-item__label">Time</div>
-              <div className="data-item__value">{time / 1000} sec.</div>
+              <div className="data-item__label">Time (ms)</div>
+              <div className="data-item__value">{time}</div>
             </div>
           </div>
 
@@ -44,7 +44,7 @@ const App = () => {
 
           <div className="data-item">
             <div className="data-item__inner">
-              <div className="data-item__label">Speed</div>
+              <div className="data-item__label">Speed (px/s)</div>
               <div className="data-item__value">
                 X: {speed.x}, Y: {speed.y}
               </div>
@@ -71,7 +71,7 @@ const App = () => {
 
           <div className="data-item">
             <div className="data-item__inner">
-              <div className="data-item__label">Current pos</div>
+              <div className="data-item__label">Current position</div>
               <div className="data-item__value">
                 X: {position.x}, Y: {position.y}
               </div>

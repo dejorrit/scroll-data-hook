@@ -64,6 +64,10 @@ a:focus {
   margin-bottom: 10px;
 }
 
+.data-item__value {
+  font-variant-numeric: tabular-nums;
+}
+
 .page-container {
   width: 1020px;
   margin: 0 auto 250px;
