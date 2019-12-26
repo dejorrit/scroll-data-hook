@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/scroll-data-hook/static/css/main.947eca7a.chunk.css",
+    "main.js": "/scroll-data-hook/static/js/main.01f33f52.chunk.js",
+    "main.js.map": "/scroll-data-hook/static/js/main.01f33f52.chunk.js.map",
+    "runtime-main.js": "/scroll-data-hook/static/js/runtime-main.40046442.js",
+    "runtime-main.js.map": "/scroll-data-hook/static/js/runtime-main.40046442.js.map",
+    "static/js/2.4cee5dba.chunk.js": "/scroll-data-hook/static/js/2.4cee5dba.chunk.js",
+    "static/js/2.4cee5dba.chunk.js.map": "/scroll-data-hook/static/js/2.4cee5dba.chunk.js.map",
+    "index.html": "/scroll-data-hook/index.html",
+    "precache-manifest.8c87fd18401fa48aa4cc3b91ffbf0bc5.js": "/scroll-data-hook/precache-manifest.8c87fd18401fa48aa4cc3b91ffbf0bc5.js",
+    "service-worker.js": "/scroll-data-hook/service-worker.js",
+    "static/css/main.947eca7a.chunk.css.map": "/scroll-data-hook/static/css/main.947eca7a.chunk.css.map",
+    "static/js/2.4cee5dba.chunk.js.LICENSE": "/scroll-data-hook/static/js/2.4cee5dba.chunk.js.LICENSE"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.40046442.js",
+    "static/js/2.4cee5dba.chunk.js",
+    "static/css/main.947eca7a.chunk.css",
+    "static/js/main.01f33f52.chunk.js"
+  ]
+}
