@@ -4,6 +4,10 @@
 
 [![NPM](https://img.shields.io/npm/v/scroll-data-hook.svg)](https://www.npmjs.com/package/scroll-data-hook)
 
+## Demo
+
+Check out the demo [here](https://dejorrit.github.io/scroll-data-hook/).
+
 ## Install
 
 ```bash
