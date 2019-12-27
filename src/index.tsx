@@ -121,24 +121,12 @@ export const useScrollData = (options: OptionsType = {}): ScrollDataType => {
     const nextframeValues = {
       ...frameValues.current,
       scrolling: true,
-      time: Math.round(time),
+      time,
       direction,
-      speed: {
-        x: Math.round(speed.x),
-        y: Math.round(speed.y)
-      },
-      totalDistance: {
-        x: Math.round(totalDistance.x),
-        y: Math.round(totalDistance.y)
-      },
-      relativeDistance: {
-        x: Math.round(relativeDistance.x),
-        y: Math.round(relativeDistance.y)
-      },
-      position: {
-        x: Math.round(position.x),
-        y: Math.round(position.y)
-      }
+      speed,
+      totalDistance,
+      relativeDistance,
+      position
     };
 
     // Store new values
@@ -233,5 +221,25 @@ export const useScrollData = (options: OptionsType = {}): ScrollDataType => {
     };
   }, []);
 
-  return data;
+  // Return data with rounded values
+  return {
+    ...data,
+    time: Math.round(data.time),
+    speed: {
+      x: Math.round(data.speed.x),
+      y: Math.round(data.speed.y)
+    },
+    totalDistance: {
+      x: Math.round(data.totalDistance.x),
+      y: Math.round(data.totalDistance.y)
+    },
+    relativeDistance: {
+      x: Math.round(data.relativeDistance.x),
+      y: Math.round(data.relativeDistance.y)
+    },
+    position: {
+      x: Math.round(data.position.x),
+      y: Math.round(data.position.y)
+    }
+  };
 };
