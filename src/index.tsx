@@ -108,16 +108,14 @@ export const useScrollData = (options: OptionsType = {}): ScrollDataType => {
     // Set new speed values
     const timestampDiff = timestamp - (frameTimestamp.current || 0);
     const speed = {
-      x: Math.round(
+      x:
         (Math.abs(frameValues.current.position.x - position.x) /
           Math.max(1, timestampDiff)) *
-          1000
-      ),
-      y: Math.round(
+        1000,
+      y:
         (Math.abs(frameValues.current.position.y - position.y) /
           Math.max(1, timestampDiff)) *
-          1000
-      )
+        1000
     };
 
     const nextframeValues = {
@@ -125,10 +123,22 @@ export const useScrollData = (options: OptionsType = {}): ScrollDataType => {
       scrolling: true,
       time: Math.round(time),
       direction,
-      speed,
-      totalDistance,
-      relativeDistance,
-      position
+      speed: {
+        x: Math.round(speed.x),
+        y: Math.round(speed.y)
+      },
+      totalDistance: {
+        x: Math.round(totalDistance.x),
+        y: Math.round(totalDistance.y)
+      },
+      relativeDistance: {
+        x: Math.round(relativeDistance.x),
+        y: Math.round(relativeDistance.y)
+      },
+      position: {
+        x: Math.round(position.x),
+        y: Math.round(position.y)
+      }
     };
 
     // Store new values
