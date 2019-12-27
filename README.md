@@ -1,6 +1,7 @@
 # scroll-data-hook
 
-> React Hook that helps getting useful information about viewport scrolling
+The `scroll-data-hook` gives information about user-scrolling like speed, distance, direction and more. Very useful when building navigation menu's that show and hide based on scrolling behaviour.
+
 
 [![NPM](https://img.shields.io/npm/v/scroll-data-hook.svg)](https://www.npmjs.com/package/scroll-data-hook)
 
