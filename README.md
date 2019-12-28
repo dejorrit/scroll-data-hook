@@ -1,15 +1,12 @@
-# scroll-data-hook
-
-The `scroll-data-hook` gives information about user-scrolling like speed, distance, direction and more. Very useful when building navigation menu's that show and hide based on scrolling behaviour.
-
+# Scroll Data Hook
 
 [![NPM](https://img.shields.io/npm/v/scroll-data-hook.svg)](https://www.npmjs.com/package/scroll-data-hook)
 
-## Demo
+The `useScrollData` hook returns information about scroll speed, distance, direction and more. Useful when building dynamic navigation bars or doing other scroll related UI updates.
 
-Check out the demo [here](https://dejorrit.github.io/scroll-data-hook/).
+Check out [the demo](https://dejorrit.github.io/scroll-data-hook/).
 
-## Install
+## Installation
 
 ```bash
 yarn add scroll-data-hook
@@ -21,7 +18,7 @@ yarn add scroll-data-hook
 import * as React from "react";
 import { useScrollData } from "scroll-data-hook";
 
-const Example = () => {
+const MyComponent = () => {
   const {
     scrolling,
     time,
@@ -31,9 +28,45 @@ const Example = () => {
     relativeDistance,
     totalDistance
   } = useScrollData({
-    onScrollStart: () => {},
-    onScrollEnd: () => {}
+    onScrollStart: () => {
+      console.log('Started scrolling);
+    },
+    onScrollEnd: () => {
+      console.log('Finished scrolling);
+    }
   });
+
+  return (
+    <div>
+      <p>
+        {scrolling ? 'Scrolling' : 'Not scrolling'}
+      </p>
+
+      <p>
+        Scrolling time: {time} milliseconds
+      </p>
+
+      <p>
+        Horizontal speed: {speed.x} pixels per second
+      </p>
+
+      <p>
+        Vertical speed: {speed.y} pixels per second
+      </p>
+
+      <p>
+        Direction: {direction.x} {direction.y}
+      </p>
+
+      <p>
+        Relative distance: {relativeDistance.x}/{relativeDistance.y}
+      </p>
+
+      <p>
+        Total distance: {totalDistance.x}/{totalDistance.y}
+      </p>
+    </div>
+  )
 };
 ```
 
