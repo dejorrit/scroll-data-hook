@@ -28,8 +28,6 @@ const INITIAL_DATA = {
   }
 };
 
-const isBrowser = typeof window !== "undefined";
-
 function getPositionX() {
   return window.pageXOffset || 0;
 }
@@ -208,9 +206,6 @@ export const useScrollData = (options: OptionsType = {}): ScrollDataType => {
   }
 
   React.useEffect(() => {
-    // Stop when we're not in a browser environment
-    if (!isBrowser) return;
-
     // Add scrollListener
     window.addEventListener("scroll", onScroll, true);
 
