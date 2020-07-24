@@ -29,10 +29,10 @@ const MyComponent = () => {
     totalDistance
   } = useScrollData({
     onScrollStart: () => {
-      console.log('Started scrolling);
+      console.log('Started scrolling');
     },
     onScrollEnd: () => {
-      console.log('Finished scrolling);
+      console.log('Finished scrolling');
     }
   });
 
