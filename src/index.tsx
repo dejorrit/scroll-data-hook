@@ -28,12 +28,12 @@ const INITIAL_DATA = {
   }
 };
 
-function getPositionX() {
-  return window.pageXOffset || 0;
+function getPositionX(elem = { scrollLeft: 0 }) {
+  return elem.scrollLeft || 0;
 }
 
-function getPositionY() {
-  return window.pageYOffset || 0;
+function getPositionY(elem = { scrollTop: 0 }) {
+  return elem.scrollTop || 0;
 }
 
 function getDirectionX(x: number, frameValues: ScrollDataType): string | null {
@@ -64,7 +64,7 @@ function getRelativeDistanceY(y: number, startValues: ScrollDataType): number {
   return Math.abs(y - startValues.position.y);
 }
 
-export const useScrollData = (options: OptionsType = {}): ScrollDataType => {
+export const useScrollData = (options: OptionsType = { }): ScrollDataType => {
   const [data, setData] = React.useState<ScrollDataType>(INITIAL_DATA);
   const startValues = React.useRef<ScrollDataType>(INITIAL_DATA);
   const frameValues = React.useRef<ScrollDataType>(INITIAL_DATA);
@@ -81,8 +81,8 @@ export const useScrollData = (options: OptionsType = {}): ScrollDataType => {
 
     // Set new position values
     const position = {
-      x: getPositionX(),
-      y: getPositionY()
+      x: getPositionX(options.ref.current),
+      y: getPositionY(options.ref.current)
     };
 
     // Set new direction values
@@ -206,15 +206,18 @@ export const useScrollData = (options: OptionsType = {}): ScrollDataType => {
   }
 
   React.useEffect(() => {
+    if (!options.ref.current) {
+      return;
+    }
     // Add scrollListener
-    window.addEventListener("scroll", onScroll, true);
+    options.ref.current.addEventListener("scroll", onScroll, true);
 
     // Remove listener when unmounting
     return () => {
       clearTimeout(scrollTimeout.current);
-      window.removeEventListener("scroll", onScroll, true);
+      options.ref.current.removeEventListener("scroll", onScroll, true);
     };
-  }, []);
+  }, [options.ref]);
 
   // Return data with rounded values
   return {
