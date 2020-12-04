@@ -23,5 +23,5 @@ export type ScrollDataType = {
 export type OptionsType = {
   onScrollStart?: Function;
   onScrollEnd?: Function;
-  ref: RefObject<HTMLElement>;
+  ref?: RefObject<HTMLElement>;
 };
