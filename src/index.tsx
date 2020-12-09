@@ -28,20 +28,20 @@ const INITIAL_DATA = {
   }
 };
 
-function hasOwnProp(obj: Object, prop: string) {
+function hasProp(obj: Object, prop: string) {
   if (typeof obj === 'undefined' || obj === null) return false;
-  return Object.hasOwnProperty.call(obj, prop);
+  return prop in obj
 }
 
 function getPositionX(elem: Window | HTMLElement) {
-  if (hasOwnProp(elem, 'pageXOffset')) return elem.pageXOffset;
-  if (hasOwnProp(elem, 'scrollLeft')) return elem.scrollLeft;
+  if (hasProp(elem, 'pageXOffset')) return elem.pageXOffset;
+  if (hasProp(elem, 'scrollLeft')) return elem.scrollLeft;
   return 0
 }
 
 function getPositionY(elem: Window | HTMLElement) {
-  if (hasOwnProp(elem, 'pageYOffset')) return elem.pageYOffset;
-  if (hasOwnProp(elem, 'scrollTop')) return elem.scrollTop;
+  if (hasProp(elem, 'pageYOffset')) return elem.pageYOffset;
+  if (hasProp(elem, 'scrollTop')) return elem.scrollTop;
   return 0
 }
 
