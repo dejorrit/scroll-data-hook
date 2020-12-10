@@ -1,3 +1,5 @@
+import { RefObject } from 'react'
+
 export type DirectionType = {
   x: string | null;
   y: string | null;
@@ -21,4 +23,5 @@ export type ScrollDataType = {
 export type OptionsType = {
   onScrollStart?: Function;
   onScrollEnd?: Function;
+  ref?: RefObject<HTMLElement>;
 };

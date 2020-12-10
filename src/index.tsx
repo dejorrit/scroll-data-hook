@@ -28,12 +28,21 @@ const INITIAL_DATA = {
   }
 };
 
-function getPositionX() {
-  return window.pageXOffset || 0;
+function hasProp(obj: Object, prop: string) {
+  if (typeof obj === 'undefined' || obj === null) return false;
+  return prop in obj
 }
 
-function getPositionY() {
-  return window.pageYOffset || 0;
+function getPositionX(elem: Window | HTMLElement) {
+  if (hasProp(elem, 'pageXOffset')) return elem.pageXOffset;
+  if (hasProp(elem, 'scrollLeft')) return elem.scrollLeft;
+  return 0
+}
+
+function getPositionY(elem: Window | HTMLElement) {
+  if (hasProp(elem, 'pageYOffset')) return elem.pageYOffset;
+  if (hasProp(elem, 'scrollTop')) return elem.scrollTop;
+  return 0
 }
 
 function getDirectionX(x: number, frameValues: ScrollDataType): string | null {
@@ -72,6 +81,7 @@ export const useScrollData = (options: OptionsType = {}): ScrollDataType => {
   const frameTimestamp = React.useRef<number | null>();
   const scrollTimeout = React.useRef<any>(null);
   const raf = React.useRef<any>(null);
+  const scrollElem = (options.ref && options.ref.current) || window;
 
   function frame(timestamp: number) {
     if (!startTimestamp.current) startTimestamp.current = timestamp;
@@ -81,8 +91,8 @@ export const useScrollData = (options: OptionsType = {}): ScrollDataType => {
 
     // Set new position values
     const position = {
-      x: getPositionX(),
-      y: getPositionY()
+      x: getPositionX(scrollElem),
+      y: getPositionY(scrollElem)
     };
 
     // Set new direction values
@@ -206,15 +216,18 @@ export const useScrollData = (options: OptionsType = {}): ScrollDataType => {
   }
 
   React.useEffect(() => {
+    if (!scrollElem) {
+      return;
+    }
     // Add scrollListener
-    window.addEventListener("scroll", onScroll, true);
+    scrollElem.addEventListener("scroll", onScroll, true);
 
     // Remove listener when unmounting
     return () => {
       clearTimeout(scrollTimeout.current);
-      window.removeEventListener("scroll", onScroll, true);
+      scrollElem.removeEventListener("scroll", onScroll, true);
     };
-  }, []);
+  }, [scrollElem]);
 
   // Return data with rounded values
   return {
